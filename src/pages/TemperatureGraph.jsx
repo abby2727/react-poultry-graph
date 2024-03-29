@@ -26,7 +26,7 @@ const TemperatureGraph = () => {
 		'temperature-data',
 		() => {
 			return axios.get(
-				'https://piggery-backend.vercel.app/api/temperature/'
+				'https://poultry-backend.vercel.app/api/temperature/'
 			);
 		},
 		{ staleTime: 10 * 60 * 1000 } // refetch ONLY after 10 minutes

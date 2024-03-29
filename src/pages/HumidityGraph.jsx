@@ -24,7 +24,7 @@ const HumidityGraph = () => {
 		'humidity-data',
 		() => {
 			return axios.get(
-				'https://piggery-backend.vercel.app/api/humidity/'
+				'https://poultry-backend.vercel.app/api/humidity/'
 			);
 		},
 		{ staleTime: 10 * 60 * 1000 } // refetch ONLY after 10 minutes

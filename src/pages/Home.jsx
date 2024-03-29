@@ -23,7 +23,7 @@ const Home = () => {
 	const { isLoading, data: ammoniaValue } = useQuery(
 		'ammonia-data',
 		() => {
-			return axios.get('https://piggery-backend.vercel.app/api/ammonia');
+			return axios.get('https://poultry-backend.vercel.app/api/ammonia');
 		},
 		{ staleTime: 10 * 60 * 1000 } // refetch ONLY after 10 minutes
 	);

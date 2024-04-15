@@ -7,20 +7,20 @@ body {
 }
 
 .container {
-	height: 100vh;
+	height: calc(100vh - 4.5rem);
 	background-image: linear-gradient(#ffffff, #e1e1e1);
 }
 
 /* Navbar Styling */
 nav {
-	background-color: #104177;
+	background-color: #307a51;
 	color: white;
 	display: flex;
 	justify-content: space-between;
 	align-items: stretch;
 	gap: 2rem;
 	padding: 12px 2rem;
-	height: 3.8rem;
+	height: 4.5rem;
 }
 
 nav ul {
@@ -83,7 +83,7 @@ nav a.active {
 	width: 58em;
 	padding: 20px;
 	border-radius: 10px;
-	border: solid 3px #104177;
+	border: solid 3px #307a51;
 	background: white;
 	display: flex;
 }

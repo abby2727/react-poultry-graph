@@ -55,10 +55,8 @@ const App = () => {
 	return (
 		<AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
 			<QueryClientProvider client={queryClient}>
-				<div className='container'>
-					{isLoggedIn && <Navbar />}
-					{routing}
-				</div>
+				{isLoggedIn && <Navbar />}
+				<div className='container'>{routing}</div>
 			</QueryClientProvider>
 		</AuthContext.Provider>
 	);

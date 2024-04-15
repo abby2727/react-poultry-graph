@@ -10,13 +10,13 @@ const Navbar = () => {
 					<img src={logo} alt='Logo' width={55} height={55} />
 				</div>
 				<NavLink className='nav-link' to='/ammonia'>
-					Ammonia
+					<span style={{ fontSize: 20 }}>Ammonia</span>
 				</NavLink>
 				<NavLink className='nav-link' to='/temperature'>
-					Temperature
+					<span style={{ fontSize: 20 }}>Temperature</span>
 				</NavLink>
 				<NavLink className='nav-link' to='/humidity'>
-					Humidity
+					<span style={{ fontSize: 20 }}>Humidity</span>
 				</NavLink>
 			</div>
 			<ul>

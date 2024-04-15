@@ -63,7 +63,7 @@ const UserMenu = () => {
 				aria-expanded={logoutOpen ? 'true' : undefined}
 				onClick={(event) => handleClick(event, 'logout')}
 			>
-				<AccountCircleIcon className='icon' />
+				<AccountCircleIcon className='icon' fontSize='large' />
 			</button>
 
 			<Menu

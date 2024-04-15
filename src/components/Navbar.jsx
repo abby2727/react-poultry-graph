@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import UserMenu from './UserMenu';
 import logo from '../assets/logo/SNSU_Logo-Bg.png';
+import { Divider } from '@mui/material';
 
 const Navbar = () => {
 	return (
@@ -17,6 +18,15 @@ const Navbar = () => {
 				</NavLink>
 				<NavLink className='nav-link' to='/humidity'>
 					<span style={{ fontSize: 20 }}>Humidity</span>
+				</NavLink>
+				<Divider
+					orientation='vertical'
+					variant='middle'
+					flexItem
+					sx={{ borderColor: 'white', marginLeft: '10px' }}
+				/>
+				<NavLink className='nav-link' to='/all-reading'>
+					<span style={{ fontWeight: 500, fontSize: 18 }}>All</span>
 				</NavLink>
 			</div>
 			<ul>

@@ -7,7 +7,7 @@ import { useQuery } from 'react-query';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import Button from '@mui/material/Button';
+import { Button } from '@mui/material';
 import CustomSnackbar from '../components/CustomSnackbar';
 
 const TemperatureGraph = () => {

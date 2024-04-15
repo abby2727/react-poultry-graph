@@ -1,5 +1,4 @@
-import { Snackbar } from '@mui/material';
-import Alert from '@mui/material/Alert';
+import { Snackbar, Alert } from '@mui/material';
 
 const CustomSnackbar = ({ open, handleClose, message }) => {
 	return (

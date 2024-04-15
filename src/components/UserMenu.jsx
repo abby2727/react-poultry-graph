@@ -2,10 +2,7 @@ import { useContext, useState } from 'react';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MenuIcon from '@mui/icons-material/Menu';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Popover from '@mui/material/Popover';
-import { Paper, Typography } from '@mui/material';
+import { Menu, MenuItem, Popover, Paper, Typography } from '@mui/material';
 import { AuthContext } from '../App'; // import AuthContext
 import { useNavigate } from 'react-router-dom';
 

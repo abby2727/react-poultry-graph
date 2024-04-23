@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -8,15 +8,18 @@ import {
 	Popover,
 	Paper,
 	Typography,
-	Divider
+	Divider,
+	Button
 } from '@mui/material';
 import { AuthContext } from '../App'; // import AuthContext
 import { useNavigate } from 'react-router-dom';
+import { main } from '../utils/serviceWorkerUtils';
 
 const UserMenu = () => {
 	const [logoutAnchor, setLogoutAnchor] = useState(null);
 	const [navMenuAnchor, setNavMenuAnchor] = useState(null);
 	const [notificationAnchor, setNotificationAnchor] = useState(null);
+	const [permission, setPermission] = useState(Notification.permission);
 
 	const logoutOpen = Boolean(logoutAnchor);
 	const navMenuOpen = Boolean(navMenuAnchor);
@@ -44,6 +47,20 @@ const UserMenu = () => {
 		navigate('/'); // Redirect to login page
 	};
 
+	const handleButtonClick = async () => {
+		try {
+			await main();
+			setPermission(Notification.permission);
+			console.log('Done!');
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	useEffect(() => {
+		setPermission(Notification.permission);
+	}, []);
+
 	return (
 		<>
 			<button
@@ -56,6 +73,7 @@ const UserMenu = () => {
 			>
 				<MenuIcon className='icon' />
 			</button>
+
 			{/* <button
 				aria-describedby={id}
 				variant='contained'
@@ -63,6 +81,17 @@ const UserMenu = () => {
 			>
 				<NotificationsIcon className='icon' />
 			</button> */}
+
+			{permission !== 'granted' && (
+				<Button
+					variant='contained'
+					size='small'
+					onClick={handleButtonClick}
+				>
+					Enable Notification
+				</Button>
+			)}
+
 			<button
 				id='logout-button'
 				aria-controls={logoutOpen ? 'logout-menu' : undefined}

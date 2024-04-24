@@ -29,6 +29,18 @@ const Navbar = () => {
 				<NavLink className='nav-link' to='/all-reading'>
 					<span style={{ fontWeight: 500, fontSize: 20 }}>All</span>
 				</NavLink>
+				<Divider
+					orientation='vertical'
+					variant='middle'
+					flexItem
+					className='divider'
+					sx={{ borderColor: 'white', marginLeft: '10px' }}
+				/>
+				<NavLink className='nav-link' to='/egg-counter'>
+					<span style={{ fontWeight: 500, fontSize: 20 }}>
+						Egg Counter
+					</span>
+				</NavLink>
 			</div>
 			<ul>
 				<UserMenu />

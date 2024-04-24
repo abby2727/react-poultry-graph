@@ -142,6 +142,17 @@ const UserMenu = () => {
 				<MenuItem onClick={() => navigate('/all-reading')}>
 					<span style={{ fontWeight: 500, fontSize: 18 }}>All</span>
 				</MenuItem>
+				<Divider
+					orientation='horizontal'
+					variant='middle'
+					flexItem
+					sx={{ borderColor: 'black', marginLeft: '10px' }}
+				/>
+				<MenuItem onClick={() => navigate('/egg-counter')}>
+					<span style={{ fontWeight: 500, fontSize: 18 }}>
+						Egg Counter
+					</span>
+				</MenuItem>
 			</Menu>
 
 			<Popover

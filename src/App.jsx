@@ -7,6 +7,7 @@ import TemperatureGraph from './pages/TemperatureGraph';
 import HumidityGraph from './pages/HumidityGraph';
 import LoginPage from './pages/LoginPage';
 import AllReading from './pages/AllReading';
+import EggCounter from './pages/EggCounter';
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,10 @@ const App = () => {
 		{
 			path: '/all-reading',
 			element: isLoggedIn ? <AllReading /> : <LoginPage />
+		},
+		{
+			path: '/egg-counter',
+			element: isLoggedIn ? <EggCounter /> : <LoginPage />
 		},
 		{ path: '/', element: <LoginPage /> }
 	]);

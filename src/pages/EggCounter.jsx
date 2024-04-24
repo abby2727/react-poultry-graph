@@ -4,12 +4,28 @@ import axios from 'axios';
 import { months } from '../constants/months';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useQuery } from 'react-query';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { Button } from '@mui/material';
+import CustomSnackbar from '../components/CustomSnackbar';
 
 const EggCounter = () => {
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
+	const [isDateRangeApplied, setIsDateRangeApplied] = useState(false);
+	const [filteredEggCountValue, setFilteredEggCountValue] = useState([]);
+	const [filterLoading, setFilterLoading] = useState(false);
+	const [dateError, setDateError] = useState(false);
+	const [snackbarOpen, setSnackbarOpen] = useState(false);
+	const [snackbarMessage, setSnackbarMessage] = useState('');
+
 	const { isLoading: isLoadingEggCount, data: eggCountValue } = useQuery(
 		'egg-count-data',
 		() => {
-			return axios.get('http://localhost:5001/api/egg-counter');
+			return axios.get(
+				'https://poultry-backend.vercel.app/api/egg-counter'
+			);
 		},
 		{ staleTime: 10 * 60 * 1000 } // refetch ONLY after 10 minutes
 	);
@@ -42,6 +58,111 @@ const EggCounter = () => {
 		return { values, formattedDates };
 	};
 
+	const filterDataByDateRange = (data, startDate, endDate) => {
+		if (startDate && endDate) {
+			setFilterLoading(true);
+			const start = new Date(startDate);
+			const end = new Date(endDate);
+
+			start.setHours(0, 0, 0, 0);
+			end.setHours(0, 0, 0, 0);
+
+			const filteredData = data.filter((item) => {
+				const createdAt = new Date(item.createdAt);
+				createdAt.setHours(0, 0, 0, 0);
+				return createdAt >= start && createdAt <= end;
+			});
+
+			setFilterLoading(false);
+			return filteredData;
+		}
+	};
+
+	const handleSubmit = () => {
+		if (startDate && endDate) {
+			const startDateObj = new Date(startDate);
+			const endDateObj = new Date(endDate);
+
+			// Validate that the start date is not later than the end date.
+			if (startDateObj > endDateObj) {
+				setDateError(true);
+				setSnackbarOpen(true);
+				setSnackbarMessage(
+					'The start date cannot be later than the end date.'
+				);
+				return;
+			}
+			// End first validation
+
+			// Validate that the start date is not earlier than the first date in the data
+			const firstDataDate = new Date(
+				eggCountValue?.data[0].createdAt.split(' ')[0]
+			);
+			const formatStartDate = startDateObj.toLocaleDateString('en-US', {
+				year: 'numeric',
+				month: 'short',
+				day: 'numeric'
+			});
+			const formatFirstDateRecord = firstDataDate.toLocaleDateString(
+				'en-US',
+				{
+					year: 'numeric',
+					month: 'short',
+					day: 'numeric'
+				}
+			);
+			// Create new Date objects from the year, month, and day
+			const startDateObjDateOnly = new Date(
+				startDateObj.getFullYear(),
+				startDateObj.getMonth(),
+				startDateObj.getDate()
+			);
+			const firstDataDateDateOnly = new Date(
+				firstDataDate.getFullYear(),
+				firstDataDate.getMonth(),
+				firstDataDate.getDate()
+			);
+			if (startDateObjDateOnly < firstDataDateDateOnly) {
+				setDateError(true);
+				setSnackbarOpen(true);
+				setSnackbarMessage(
+					`No data recorded at ${formatStartDate}. ${formatFirstDateRecord} is the first data recorded in database.`
+				);
+				return;
+			}
+			// End second validation
+
+			const utcStartDate = new Date(
+				startDateObj.getTime() -
+					startDateObj.getTimezoneOffset() * 60000
+			);
+			const utcEndDate = new Date(
+				endDateObj.getTime() - endDateObj.getTimezoneOffset() * 60000
+			);
+
+			const formattedStartDate = utcStartDate.toISOString().split('T')[0];
+			const formattedEndDate = utcEndDate.toISOString().split('T')[0];
+			const filteredEggCountData = filterDataByDateRange(
+				eggCountValue?.data,
+				formattedStartDate,
+				formattedEndDate
+			);
+
+			setFilteredEggCountValue(filteredEggCountData);
+			setIsDateRangeApplied(true);
+			setDateError(false);
+			setSnackbarOpen(false);
+		}
+	};
+
+	const handleClear = () => {
+		setStartDate(null);
+		setEndDate(null);
+		setIsDateRangeApplied(false);
+		setDateError(false);
+		setSnackbarOpen(false);
+	};
+
 	//* ========== CHART 1
 	const chartRef = useRef(null);
 	const myChartRef = useRef(null);
@@ -49,7 +170,9 @@ const EggCounter = () => {
 	useEffect(() => {
 		if (!isLoadingEggCount) {
 			const ctx = chartRef.current.getContext('2d');
-			const eggCountData = transformEggObject(eggCountValue?.data);
+			const eggCountData = isDateRangeApplied
+				? transformEggObject(filteredEggCountValue)
+				: transformEggObject(eggCountValue?.data);
 
 			myChartRef.current = new Chart(ctx, {
 				type: 'line',
@@ -92,7 +215,7 @@ const EggCounter = () => {
 
 			return () => myChartRef.current.destroy();
 		}
-	}, [eggCountValue?.data]);
+	}, [eggCountValue?.data, filteredEggCountValue, isDateRangeApplied]);
 
 	//* ========== CHART 2
 	const chartRef2 = useRef(null);
@@ -100,7 +223,9 @@ const EggCounter = () => {
 	useEffect(() => {
 		if (!isLoadingEggCount) {
 			const ctx2 = chartRef2.current.getContext('2d');
-			const eggCountData = transformEggObject(eggCountValue?.data);
+			const eggCountData = isDateRangeApplied
+				? transformEggObject(filteredEggCountValue)
+				: transformEggObject(eggCountValue?.data);
 
 			const myChart2 = new Chart(ctx2, {
 				type: 'bar',
@@ -148,7 +273,7 @@ const EggCounter = () => {
 
 			return () => myChart2.destroy();
 		}
-	}, [eggCountValue?.data]);
+	}, [eggCountValue?.data, filteredEggCountValue, isDateRangeApplied]);
 
 	//* Adjust the width of the chart box based on the number of bars
 	const boxRef = useRef(null);
@@ -169,6 +294,40 @@ const EggCounter = () => {
 
 	return (
 		<>
+			<div className='date-picker'>
+				<LocalizationProvider dateAdapter={AdapterDayjs}>
+					<DatePicker
+						value={startDate}
+						onChange={setStartDate}
+						className={dateError ? 'datepicker-error' : ''}
+					/>
+					<span className='dash' />
+					<DatePicker value={endDate} onChange={setEndDate} />
+					<Button
+						variant='contained'
+						color='primary'
+						onClick={handleSubmit}
+						disabled={!startDate || !endDate}
+						className='button'
+					>
+						Submit
+					</Button>
+					<Button
+						variant='outlined'
+						color='secondary'
+						onClick={handleClear}
+						disabled={!startDate && !endDate}
+						className='button'
+					>
+						Clear
+					</Button>
+				</LocalizationProvider>
+			</div>
+			<CustomSnackbar
+				open={snackbarOpen}
+				handleClose={() => setSnackbarOpen(false)}
+				message={snackbarMessage}
+			/>
 			<div className='chartCard'>
 				{!isLoadingEggCount ? (
 					<>

@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
 import axios from 'axios';
 import { months } from '../constants/months';
+import { hourlyLabels } from '../constants/hourlyLabels';
+import { humidityHourlyValues } from '../constants/humidityHourlyValues';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useQuery } from 'react-query';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Button } from '@mui/material';
+import { Button, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import CustomSnackbar from '../components/CustomSnackbar';
 
 const HumidityGraph = () => {
@@ -19,6 +21,7 @@ const HumidityGraph = () => {
 	const [dateError, setDateError] = useState(false);
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMessage, setSnackbarMessage] = useState('');
+	const [timePeriod, setTimePeriod] = useState('daily');
 
 	const { isLoading, data: humidityValue } = useQuery(
 		'humidity-data',
@@ -171,6 +174,12 @@ const HumidityGraph = () => {
 		setSnackbarOpen(false);
 	};
 
+	const handleToggleChange = (event, newTimePeriod) => {
+		if (newTimePeriod !== null) {
+			setTimePeriod(newTimePeriod);
+		}
+	};
+
 	//* ========== CHART 1
 	const chartRef = useRef(null);
 	const myChartRef = useRef(null);
@@ -178,18 +187,27 @@ const HumidityGraph = () => {
 	useEffect(() => {
 		if (!isLoading) {
 			const ctx = chartRef.current.getContext('2d');
-			const transformedData = isDateRangeApplied
-				? transformObject(filteredHumidityValue)
-				: transformObject(humidityValue?.data);
+			let labels, data;
+
+			if (timePeriod === 'daily') {
+				const transformedData = isDateRangeApplied
+					? transformObject(filteredHumidityValue)
+					: transformObject(humidityValue?.data);
+				labels = getHumidityLabels(transformedData);
+				data = getHumidityAverageValues(transformedData);
+			} else if (timePeriod === 'hourly') {
+				labels = hourlyLabels;
+				data = humidityHourlyValues;
+			}
 
 			myChartRef.current = new Chart(ctx, {
 				type: 'line',
 				data: {
-					labels: getHumidityLabels(transformedData),
+					labels: labels,
 					datasets: [
 						{
 							label: 'Humidity Levels',
-							data: getHumidityAverageValues(transformedData),
+							data: data,
 							backgroundColor: 'rgba(255, 206, 86, 0.4)',
 							borderColor: 'rgba(255, 206, 86, 0.9)',
 							borderWidth: 1,
@@ -223,7 +241,13 @@ const HumidityGraph = () => {
 
 			return () => myChartRef.current.destroy();
 		}
-	}, [humidityValue?.data, filteredHumidityValue, isDateRangeApplied]);
+	}, [
+		humidityValue?.data,
+		filteredHumidityValue,
+		isDateRangeApplied,
+		isLoading,
+		timePeriod
+	]);
 
 	//* ========== CHART 2
 	const chartRef2 = useRef(null);
@@ -231,9 +255,18 @@ const HumidityGraph = () => {
 	useEffect(() => {
 		if (!isLoading) {
 			const ctx2 = chartRef2.current.getContext('2d');
-			const transformedData = isDateRangeApplied
-				? transformObject(filteredHumidityValue)
-				: transformObject(humidityValue?.data);
+			let labels, data;
+
+			if (timePeriod === 'daily') {
+				const transformedData = isDateRangeApplied
+					? transformObject(filteredHumidityValue)
+					: transformObject(humidityValue?.data);
+				labels = getHumidityLabels(transformedData);
+				data = getHumidityAverageValues(transformedData);
+			} else if (timePeriod === 'hourly') {
+				labels = hourlyLabels;
+				data = humidityHourlyValues;
+			}
 
 			const myChart2 = new Chart(ctx2, {
 				type: 'line',
@@ -242,7 +275,7 @@ const HumidityGraph = () => {
 					datasets: [
 						{
 							label: '',
-							data: getHumidityAverageValues(transformedData)
+							data: data
 						}
 					]
 				},
@@ -281,7 +314,13 @@ const HumidityGraph = () => {
 
 			return () => myChart2.destroy();
 		}
-	}, [humidityValue?.data, filteredHumidityValue, isDateRangeApplied]);
+	}, [
+		humidityValue?.data,
+		filteredHumidityValue,
+		isDateRangeApplied,
+		isLoading,
+		timePeriod
+	]);
 
 	const boxRef = useRef(null);
 	const [barLength, setBarLength] = useState(0);
@@ -330,6 +369,38 @@ const HumidityGraph = () => {
 					</Button>
 				</LocalizationProvider>
 			</div>
+
+			<div
+				style={{
+					display: 'flex',
+					justifyContent: 'center',
+					marginTop: '15px'
+				}}
+			>
+				<ToggleButtonGroup
+					exclusive
+					value={timePeriod}
+					onChange={handleToggleChange}
+					aria-label='time period'
+					disabled={isLoading}
+				>
+					<ToggleButton
+						value='daily'
+						aria-label='daily'
+						selected={timePeriod === 'daily'}
+					>
+						Daily
+					</ToggleButton>
+					<ToggleButton
+						value='hourly'
+						aria-label='hourly'
+						selected={timePeriod === 'hourly'}
+					>
+						Hourly
+					</ToggleButton>
+				</ToggleButtonGroup>
+			</div>
+
 			<CustomSnackbar
 				open={snackbarOpen}
 				handleClose={() => setSnackbarOpen(false)}

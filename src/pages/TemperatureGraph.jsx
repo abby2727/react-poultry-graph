@@ -185,7 +185,7 @@ const TemperatureGraph = () => {
 				: transformObject(temperatureValue?.data);
 
 			myChartRef.current = new Chart(ctx, {
-				type: 'bar',
+				type: 'line',
 				data: {
 					labels: getTempLabels(transformedData),
 					datasets: [
@@ -194,7 +194,8 @@ const TemperatureGraph = () => {
 							data: getTempAverageValues(transformedData),
 							backgroundColor: 'rgba(54, 162, 235, 0.4)',
 							borderColor: 'rgba(54, 162, 235, 0.9)',
-							borderWidth: 1
+							borderWidth: 1,
+							fill: true
 						}
 					]
 				},
@@ -237,7 +238,7 @@ const TemperatureGraph = () => {
 				: transformObject(temperatureValue?.data);
 
 			const myChart2 = new Chart(ctx2, {
-				type: 'bar',
+				type: 'line',
 				data: {
 					labels: [],
 					datasets: [

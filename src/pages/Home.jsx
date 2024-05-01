@@ -181,7 +181,7 @@ const Home = () => {
 				: transformObject(ammoniaValue?.data);
 
 			myChartRef.current = new Chart(ctx, {
-				type: 'bar',
+				type: 'line',
 				data: {
 					labels: getAmmoniaLabels(transformedData),
 					datasets: [
@@ -190,7 +190,8 @@ const Home = () => {
 							data: getAmmoniaAverageValues(transformedData),
 							backgroundColor: 'rgba(48, 122, 81, 0.4)',
 							borderColor: 'rgba(48, 122, 81, 0.9)',
-							borderWidth: 1
+							borderWidth: 1,
+							fill: true
 						}
 					]
 				},
@@ -233,7 +234,7 @@ const Home = () => {
 				: transformObject(ammoniaValue?.data);
 
 			const myChart2 = new Chart(ctx2, {
-				type: 'bar',
+				type: 'line',
 				data: {
 					labels: [],
 					datasets: [

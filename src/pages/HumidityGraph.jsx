@@ -183,7 +183,7 @@ const HumidityGraph = () => {
 				: transformObject(humidityValue?.data);
 
 			myChartRef.current = new Chart(ctx, {
-				type: 'bar',
+				type: 'line',
 				data: {
 					labels: getHumidityLabels(transformedData),
 					datasets: [
@@ -192,7 +192,8 @@ const HumidityGraph = () => {
 							data: getHumidityAverageValues(transformedData),
 							backgroundColor: 'rgba(255, 206, 86, 0.4)',
 							borderColor: 'rgba(255, 206, 86, 0.9)',
-							borderWidth: 1
+							borderWidth: 1,
+							fill: true
 						}
 					]
 				},
@@ -235,7 +236,7 @@ const HumidityGraph = () => {
 				: transformObject(humidityValue?.data);
 
 			const myChart2 = new Chart(ctx2, {
-				type: 'bar',
+				type: 'line',
 				data: {
 					labels: [],
 					datasets: [

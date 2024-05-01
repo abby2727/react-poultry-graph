@@ -74,7 +74,7 @@ const AllReading = () => {
 			const humidityData = transformObject(humidityValue?.data);
 
 			myChartRef.current = new Chart(ctx, {
-				type: 'bar',
+				type: 'line',
 				data: {
 					labels: ammoniaData.formattedDates,
 					datasets: [
@@ -83,21 +83,24 @@ const AllReading = () => {
 							data: ammoniaData.values,
 							backgroundColor: 'rgba(16, 65, 119, 0.4)',
 							borderColor: 'rgba(16, 65, 119, 0.9)',
-							borderWidth: 1
+							borderWidth: 1,
+							fill: true
 						},
 						{
 							label: 'Temperature Levels',
 							data: temperatureData.values,
 							backgroundColor: 'rgba(255, 206, 86, 0.4)',
 							borderColor: 'rgba(255, 206, 86, 0.9)',
-							borderWidth: 1
+							borderWidth: 1,
+							fill: true
 						},
 						{
 							label: 'Humidity Levels',
 							data: humidityData.values,
 							backgroundColor: 'rgba(255, 159, 64, 0.4)',
 							borderColor: 'rgba(255, 159, 64, 0.9)',
-							borderWidth: 1
+							borderWidth: 1,
+							fill: true
 						}
 					]
 				},
@@ -138,7 +141,7 @@ const AllReading = () => {
 			const ammoniaData = transformObject(ammoniaValue?.data);
 
 			const myChart2 = new Chart(ctx2, {
-				type: 'bar',
+				type: 'line',
 				data: {
 					labels: [],
 					datasets: [
